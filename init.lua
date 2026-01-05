@@ -416,8 +416,14 @@ require('lazy').setup({
         defaults = {
           file_ignore_patterns = {
             'node_modules',
+            'venv',
             '.git/',
             's3_mock',
+            'datasets',
+            's3Mock/',
+            'elasticsearch/data',
+            'istex-dataset/*',
+            'elasticsearch/log/',
           },
         },
         pickers = {
