@@ -283,6 +283,9 @@ require("lazy").setup({
 			},
 		},
 	},
+	{
+		"mfussenegger/nvim-jdtls",
+	},
 
 	-- NOTE: Plugins can also be configured to run Lua code when they are loaded.
 	--
@@ -705,8 +708,38 @@ require("lazy").setup({
 				-- clangd = {},
 				gopls = {},
 				pyright = {},
-				rust_analyzer = {},
-				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
+				rust_analyzer = {
+					settings = {
+						["rust-analyzer"] = {
+							cargo = {
+								allFeatures = true,
+								loadOutDirsFromCheck = true,
+								runBuildScripts = true,
+							},
+							-- Add clippy lints for Rust.
+							checkOnSave = {
+								allFeatures = true,
+								command = "clippy",
+								extraArgs = {
+									"--",
+									"--no-deps",
+									"-Dclippy::correctness",
+									"-Dclippy::complexity",
+									"-Wclippy::perf",
+									"-Wclippy::pedantic",
+								},
+							},
+							procMacro = {
+								enable = true,
+								ignored = {
+									["async-trait"] = { "async_trait" },
+									["napi-derive"] = { "napi" },
+									["async-recursion"] = { "async_recursion" },
+								},
+							},
+						},
+					},
+				}, -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
 				--
 				-- Some languages (like typescript) have entire language plugins that can be useful:
 				--    https://github.com/pmizio/typescript-tools.nvim
@@ -751,15 +784,15 @@ require("lazy").setup({
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 			require("mason-lspconfig").setup({
-				ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+				ensure_installed = {}, -- Kickstart handles installs
 				automatic_installation = false,
 				handlers = {
 					function(server_name)
 						local server = servers[server_name] or {}
-						-- This handles overriding only values explicitly passed
-						-- by the server configuration above. Useful when disabling
-						-- certain features of an LSP (for example, turning off formatting for ts_ls)
+
+						-- merge capabilities
 						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+						-- single setup call
 						require("lspconfig")[server_name].setup(server)
 					end,
 				},
@@ -1086,3 +1119,11 @@ vim.opt.expandtab = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
+
+-- Show diagnostic error under cursor
+vim.keymap.set("n", "<leader>e", function()
+	vim.diagnostic.open_float(nil, {
+		focus = false,
+		border = "rounded",
+	})
+end, { desc = "Show diagnostic error" })
