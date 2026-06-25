@@ -9,7 +9,9 @@ return {
 				"bash",
 				"c",
 				"diff",
+				"dockerfile",
 				"html",
+				"json",
 				"lua",
 				"luadoc",
 				"markdown",
@@ -17,6 +19,10 @@ return {
 				"query",
 				"vim",
 				"vimdoc",
+				"yaml",
+
+				-- Helm templates
+				"gotmpl",
 			},
 			-- Autoinstall languages that are not installed
 			auto_install = true,

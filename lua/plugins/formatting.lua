@@ -14,6 +14,15 @@ return {
 			},
 		},
 		opts = {
+			vim.filetype.add({
+				filename = {
+					[".gitlab-ci.yml"] = "yaml",
+					[".gitlab-ci.yaml"] = "yaml",
+				},
+				pattern = {
+					[".*/templates/.*%.ya?ml"] = "helm",
+				},
+			}),
 			notify_on_error = false,
 			format_on_save = function(bufnr)
 				-- Disable "format_on_save lsp_fallback" for languages that don't
@@ -31,11 +40,11 @@ return {
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
-				-- Conform can also run multiple formatters sequentially
-				-- python = { "isort", "black" },
-				--
-				-- You can use 'stop_after_first' to run the first available formatter from the list
 				javascript = { "biome", "eslint", "oxlint", stop_after_first = true },
+				json = { "biome", "prettier", stop_after_first = true },
+				jsonc = { "biome", "prettier", stop_after_first = true },
+				yaml = { "yamlfmt", "prettier", stop_after_first = true },
+				helm = { "prettier" },
 			},
 			formatters = { auto_install = false },
 		},
