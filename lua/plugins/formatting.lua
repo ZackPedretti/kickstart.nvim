@@ -34,19 +34,31 @@ return {
 				else
 					return {
 						timeout_ms = 500,
-						lsp_format = "fallback",
+						lsp_format = "first",
 					}
 				end
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
-				javascript = { "biome", "eslint", "oxlint", stop_after_first = true },
+				javascript = { "eslint_fix", "biome", "oxlint", stop_after_first = true },
 				json = { "biome", "prettier", stop_after_first = true },
 				jsonc = { "biome", "prettier", stop_after_first = true },
 				yaml = { "yamlfmt", "prettier", stop_after_first = true },
 				helm = { "prettier" },
 			},
-			formatters = { auto_install = false },
+			formatters = {
+				eslint_fix = {
+					command = "eslint",
+					args = {
+						"--fix",
+						"--stdin",
+						"--stdin-filename",
+						"$FILENAME",
+					},
+					stdin = true,
+				},
+				auto_install = false,
+			},
 		},
 	},
 }
